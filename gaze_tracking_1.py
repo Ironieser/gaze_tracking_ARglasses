@@ -49,7 +49,7 @@ class GazeTracking(object):
     def pretreat(self):
         # 裁切图片
         height, width = self.frame.shape[:2]
-        self.frame = self.frame[100:height-100, 100:width-50]
+        self.frame = self.frame[10:height-10, 10:width-80]
 
         # 缩小尺寸
         self.frame = cv2.resize(self.frame, (int(width / 10), int(height / 10)))
@@ -103,12 +103,27 @@ class GazeTracking(object):
         except (IndexError, ZeroDivisionError):
             pass
 
+        # (x, y), radius = cv2.minEnclosingCircle(iris_cnt)
+        # (self.x, self.y) = (int(x), int(y))
         # 画十字标
         color = (0, 255, 0)
 
         cv2.line(self.frame, (self.x - 3, self.y), (self.x + 3, self.y), color, thickness=2)
         cv2.line(self.frame, (self.x, self.y - 3), (self.x, self.y + 3), color, thickness=2)
         cv2.imshow("target", self.frame)
+
+    def hough(self, frame):
+        img = self.frame.copy()
+        circle1 = cv2.HoughCircles(frame, cv2.HOUGH_GRADIENT, 1, 80, param1=8, param2=3, minRadius=5,
+                                   maxRadius=12)  # 把半径范围缩小点，检测内圆，瞳孔
+        circles = circle1[0, :, :]  # 提取为二维
+        circles = np.uint16(np.around(circles))  # 四舍五入，取整
+        for i in circles[:]:
+            cv2.circle(img, (i[0], i[1]), i[2], (255, 0, 0), 2)  # 画圆
+            print(i[2])
+            cv2.circle(img, (i[0], i[1]), 2, (255, 0, 0), 1)  # 画圆心
+
+        cv2.imshow("tt", img)
 
     def analyze(self):
         new_frame = self.pretreat()
@@ -118,13 +133,15 @@ class GazeTracking(object):
         new_frame = cv2.threshold(new_frame, best_threshold, 255, cv2.THRESH_BINARY)[1]
         cv2.imshow("binary image", new_frame)
 
+        self.hough(new_frame)
+
         new_frame = self.add_border(new_frame)
         iris_cnt = self.find_iris_cnt(new_frame)
         self.detect_iris(iris_cnt)
 
 
 if __name__ == '__main__':
-    frame = cv2.imread("eyes/eye3.jpg")
+    frame = cv2.imread("eyes/eye4.jpg")
 
     gaze = GazeTracking(frame)
     gaze.analyze()
