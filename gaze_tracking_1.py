@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import os
+import time
 
 
 class GazeTracking(object):
@@ -26,8 +28,8 @@ class GazeTracking(object):
         # 腐蚀
         # iteration的值越高，模糊程度(腐蚀程度)就越高呈正相关关系
         # 感觉不用 腐蚀 的话，识别度跟高
-        # kernel = np.ones((3, 3), np.uint8)
-        # new_frame = cv2.erode(new_frame, kernel, iterations=3)
+        kernel = np.ones((3, 3), np.uint8)
+        new_frame = cv2.erode(new_frame, kernel, iterations=3)
         # cv2.imwrite("data/eye_frame_bilateralFilter_erode.jpg", new_frame)
 
         new_frame = cv2.threshold(new_frame, threshold, 255, cv2.THRESH_BINARY)[1]
@@ -49,14 +51,14 @@ class GazeTracking(object):
     def pretreat(self):
         # 裁切图片
         height, width = self.frame.shape[:2]
-        self.frame = self.frame[10:height-10, 10:width-80]
+        self.frame = self.frame[10:height-10, 150:width-50]
 
         # 缩小尺寸
         self.frame = cv2.resize(self.frame, (int(width / 10), int(height / 10)))
 
         # 灰度化，双边滤波
-        gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
-        new_frame = cv2.bilateralFilter(gray, 10, 15, 15)
+        self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+        new_frame = cv2.bilateralFilter(self.gray, 10, 15, 15)
         cv2.imshow("bilateralFilter", new_frame)
         return new_frame
 
@@ -114,8 +116,8 @@ class GazeTracking(object):
 
     def hough(self, frame):
         img = self.frame.copy()
-        circle1 = cv2.HoughCircles(frame, cv2.HOUGH_GRADIENT, 1, 80, param1=8, param2=3, minRadius=5,
-                                   maxRadius=12)  # 把半径范围缩小点，检测内圆，瞳孔
+        circle1 = cv2.HoughCircles(frame, cv2.HOUGH_GRADIENT, 1, 80, param1=10, param2=3, minRadius=6,
+                                   maxRadius=14)  # 把半径范围缩小点，检测内圆，瞳孔
         circles = circle1[0, :, :]  # 提取为二维
         circles = np.uint16(np.around(circles))  # 四舍五入，取整
         for i in circles[:]:
@@ -123,29 +125,52 @@ class GazeTracking(object):
             print(i[2])
             cv2.circle(img, (i[0], i[1]), 2, (255, 0, 0), 1)  # 画圆心
 
-        cv2.imshow("tt", img)
+        # t = str(time.time())
+        cv2.imshow("1", img)
+        return img
 
     def analyze(self):
         new_frame = self.pretreat()
         best_threshold = self.find_best_threshold(new_frame)
         print("best_threshold:", best_threshold)
 
+        # kernel = np.ones((3, 3), np.uint8)
+        # new_frame = cv2.erode(new_frame, kernel, iterations=3)
+
         new_frame = cv2.threshold(new_frame, best_threshold, 255, cv2.THRESH_BINARY)[1]
         cv2.imshow("binary image", new_frame)
 
-        self.hough(new_frame)
+        img = self.hough(new_frame)
 
         new_frame = self.add_border(new_frame)
         iris_cnt = self.find_iris_cnt(new_frame)
         self.detect_iris(iris_cnt)
 
+        return img
+
 
 if __name__ == '__main__':
-    frame = cv2.imread("eyes/eye4.jpg")
 
-    gaze = GazeTracking(frame)
-    gaze.analyze()
-    print(gaze.x, gaze.y)
+    # 定义编解码器并创建 VideoWriter 对象
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('example.avi', fourcc, 20.0, (64, 48))
+
+    path = "data"
+    file_list = os.listdir(path)
+    i = 0
+    for files in file_list:
+        frame_dir = os.path.join(path, files)
+        frame = cv2.imread(frame_dir)
+
+        gaze = GazeTracking(frame)
+        img = gaze.analyze()
+
+        out.write(img)
+        i += 1
+        img_dir = "tests/"+str(i)+".jpg"
+        print(img_dir)
+        cv2.imwrite(img_dir, img)
+        print(gaze.x, gaze.y)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
