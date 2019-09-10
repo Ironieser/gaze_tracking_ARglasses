@@ -12,7 +12,7 @@ while True:
     # 我们从网络摄像头中得到一个新的画面
     _, frame = webcam.read()
 
-    if cv2.waitKey(0) == ord('s'):
+    if cv2.waitKey(1) == ord('s'):
         name = "eyes/" + str(time.time())+ ".jpg"
         cv2.imwrite(name, frame)
 
@@ -20,7 +20,7 @@ while True:
     # out.write(frame)
     cv2.imshow("Demo", frame)
 
-    if cv2.waitKey(0) == 27:
+    if cv2.waitKey(1) == 27:
         break
 
 cv2.destroyAllWindows()
