@@ -2,7 +2,7 @@ import os
 
 
 def rename():
-    path = input("请输入路径(例如D:\\\\picture)：")
+    path = input("请输入路径：")
     name = input("请输入开头名:")
     start_number = input("请输入开始数:")
     file_type = input("请输入后缀名（如 .jpg、.txt等等）:")

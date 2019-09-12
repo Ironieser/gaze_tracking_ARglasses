@@ -8,11 +8,12 @@ import time
 
 
 count_l, count_r = 0, 0
-count = 0
-df = pd.DataFrame(np.zeros((150,4)),columns=['world_x','world_y','eye_x','eye_y'])
+count, num = 0, 0
+df = pd.DataFrame(np.zeros((20,4)),columns=['world_x','world_y','eye_x','eye_y'])
 
 def on_press(event):
-    global count_l, count_r, count, df
+    global count_l, count_r, count, df, num
+    print(df)
     print(event.button)
     if event.button == 1:
         count_l = 1
@@ -36,13 +37,15 @@ def on_press(event):
 
 
 def get_point():
-    global count
+    global count, num, df
     path = input("请输入图片所在路径：")
     # path = "../test"
     file_list = os.listdir(path)
+    num = len(file_list)
+    df = pd.DataFrame(np.zeros((num, 4)), columns=['world_x', 'world_y', 'eye_x', 'eye_y'])
     for files in file_list:
         count += 1
-        print("这是第"+str(count)+"张图片")
+        print("这是第"+str(count)+"张图片, 共有"+str(num)+"张图片")
 
         img_dir = os.path.join(path, files)
 
@@ -56,5 +59,5 @@ def get_point():
 
 get_point()
 print(df)
-df.to_csv("points.csv")
+df.to_csv("../csv_data/points.csv")
 
