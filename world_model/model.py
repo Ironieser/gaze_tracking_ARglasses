@@ -5,7 +5,7 @@ import pandas as pd
 
 
 # 读取数据
-point = pd.read_csv("../csv_data/points.csv")
+point = pd.read_csv("../csv_data/test.csv")
 world_x = point["world_x"]
 world_y = point["world_y"]
 
@@ -15,7 +15,7 @@ eye_y = point["eye_y"]
 eye = pd.concat([eye_x, eye_y], axis=1)
 
 # clf = SGDR(loss='huber',penalty='l2',alpha=0.01,max_iter=1000)
-clf = GBR(max_depth=20)
+clf = GBR(max_depth=10)
 clf.fit(eye, world_x)
 joblib.dump(clf, "world_x.pkl")
 print('得分：',clf.score(eye, world_x))

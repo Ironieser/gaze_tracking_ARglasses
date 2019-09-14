@@ -3,7 +3,7 @@ import pandas as pd
 
 
 # 读取数据
-point = pd.read_csv("../csv_data/test.csv")
+point = pd.read_csv("../csv_data/result.csv")
 eye_x = point["eye_x"]
 eye_y = point["eye_y"]
 eye = pd.concat([eye_x, eye_y], axis=1)

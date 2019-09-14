@@ -13,7 +13,7 @@ df = pd.DataFrame(np.zeros((20,4)),columns=['world_x','world_y','eye_x','eye_y']
 
 def on_press(event):
     global count_l, count_r, count, df, num
-    print(df)
+    # print(df)
     print(event.button)
     if event.button == 1:
         count_l = 1
@@ -31,6 +31,7 @@ def on_press(event):
     if count_l == 1 and count_r == 1:
         count_l, count_r = 0, 0
         time.sleep(0.5)
+        df.to_csv("../csv_data/points.csv")
         plt.close(1)
     else:
         pass

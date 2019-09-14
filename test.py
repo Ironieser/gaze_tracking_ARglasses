@@ -1,20 +1,20 @@
-from sklearn.linear_model import SGDRegressor
-from sklearn.externals import joblib
-import pandas as pd
+import os
+import sys
+import glob
 
-point = pd.read_csv("csv_data/test.csv")
-# 读取数据
+import dlib
 
-eye_x = point["eye_x"]
-eye_y = point["eye_y"]
-eye = pd.concat([eye_x, eye_y], axis=1)
-print(eye)
+# In this example we are going to train a face detector based on the small
+# faces dataset in the examples/faces directory.  This means you need to supply
+# the path to this faces folder as a command line argument so we will know
+# where it is.
+# if len(sys.argv) != 2:
+#     print(
+#         "Give the path to the examples/faces directory as the argument to this "
+#         "program. For example, if you are in the python_examples folder then "
+#         "execute this program by running:\n"
+#         "    ./train_shape_predictor.py ../examples/faces")
+#     exit()
+# faces_folder = sys.argv[1]
 
-# 导入模型
-clf_world_x = joblib.load("model/world_x.pkl")
-world_x = []
-# 得到待预测的目标值
-list = clf_world_x.predict(eye)
-point["world_x_p"] = list
-point.to_csv("tools/points_result.csv", encoding="utf-8")
-
+print(sys.argv)
