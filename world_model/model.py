@@ -1,29 +1,22 @@
-from sklearn.linear_model import SGDRegressor as SGDR
-from sklearn.ensemble.gradient_boosting import GradientBoostingRegressor as GBR
-from sklearn.externals import joblib
-import pandas as pd
+import dlib
+
+options = dlib.simple_object_detector_training_options()
+# 单个眼睛不是左右对称的
+# options.add_left_right_image_flips = True
+# 支持向量机的C参数，通常默认取为5.自己适当更改参数以达到最好的效果
+options.C = 5
+# 线程数，你电脑有4核的话就填4
+options.num_threads = 4
+options.be_verbose = True
 
 
-# 读取数据
-point = pd.read_csv("../csv_data/test.csv")
-world_x = point["world_x"]
-world_y = point["world_y"]
-
-# 读取数据中的标签列
-eye_x = point["eye_x"]
-eye_y = point["eye_y"]
-eye = pd.concat([eye_x, eye_y], axis=1)
-
-# clf = SGDR(loss='huber',penalty='l2',alpha=0.01,max_iter=1000)
-clf = GBR(max_depth=10)
-clf.fit(eye, world_x)
-joblib.dump(clf, "world_x.pkl")
-print('得分：',clf.score(eye, world_x))
-
-clf.fit(eye, world_y)
-joblib.dump(clf, "world_y.pkl")
-print('得分：',clf.score(eye, world_y))
+training_xml_path = "world.xml"
+dlib.train_simple_object_detector(training_xml_path, "world.svm", options)
+print("")
+print("Training accuracy: {}".format(
+    dlib.test_simple_object_detector(training_xml_path, "world.svm")))
 
 
-# print('回归系数：',clf.coef_)
-# print('偏差：',clf.intercept_)
+
+
+

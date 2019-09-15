@@ -20,11 +20,11 @@ print("Training accuracy: {}".format(
     dlib.test_simple_object_detector(training_xml_path, "pupil.svm")))
 
 
-training_xml_path = "frame.xml"
-dlib.train_simple_object_detector(training_xml_path, "frame.svm", options)
+training_xml_path = "eye.xml"
+dlib.train_simple_object_detector(training_xml_path, "eye.svm", options)
 print("")
 print("Training accuracy: {}".format(
-    dlib.test_simple_object_detector(training_xml_path, "frame.svm")))
+    dlib.test_simple_object_detector(training_xml_path, "eye.svm")))
 
 
 

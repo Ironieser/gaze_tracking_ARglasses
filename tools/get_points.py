@@ -31,7 +31,7 @@ def on_press(event):
     if count_l == 1 and count_r == 1:
         count_l, count_r = 0, 0
         time.sleep(0.5)
-        df.to_csv("../csv_data/points.csv")
+        # df.to_csv("../csv_data/points.csv")
         plt.close(1)
     else:
         pass
@@ -46,6 +46,7 @@ def get_point():
     df = pd.DataFrame(np.zeros((num, 4)), columns=['world_x', 'world_y', 'eye_x', 'eye_y'])
     for files in file_list:
         count += 1
+        print(files)
         print("这是第"+str(count)+"张图片, 共有"+str(num)+"张图片")
 
         img_dir = os.path.join(path, files)
@@ -60,5 +61,5 @@ def get_point():
 
 get_point()
 print(df)
-df.to_csv("../csv_data/points.csv")
+# df.to_csv("../csv_data/points.csv")
 

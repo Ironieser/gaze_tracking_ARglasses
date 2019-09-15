@@ -4,7 +4,7 @@ import glob
 import dlib
 
 detector_pupil = dlib.simple_object_detector("pupil.svm")
-detector_frame = dlib.simple_object_detector("frame.svm")
+detector_eye = dlib.simple_object_detector("eye.svm")
 
 test_folder = "../img_data/eyes/"
 
@@ -18,7 +18,7 @@ for f in glob.glob(test_folder+'*.jpg'):
     b, g, r = cv2.split(img)
     img2 = cv2.merge([r, g, b])
     dets_pupil = detector_pupil(img2)
-    dets_frame = detector_frame(img2)
+    dets_eye = detector_eye(img2)
     print("Number of pupils detected: {}".format(len(dets_pupil)))
     for index, pupil in enumerate(dets_pupil):
         print(dets_pupil)
@@ -40,22 +40,22 @@ for f in glob.glob(test_folder+'*.jpg'):
         cv2.line(img, (pupil_x - 30, pupil_y), (pupil_x + 30, pupil_y), color, thickness=2)
         cv2.line(img, (pupil_x, pupil_y - 30), (pupil_x, pupil_y + 30), color, thickness=2)
 
-    print("Number of frames detected: {}".format(len(dets_frame)))
-    for index, frame in enumerate(dets_frame):
-        print(dets_frame)
-        print('frame {}; left {}; top {}; right {}; bottom {}'.format(index, frame.left(), frame.top(), frame.right(), frame.bottom()))
+    print("Number of eyes detected: {}".format(len(dets_eye)))
+    for index, eye in enumerate(dets_eye):
+        print(dets_eye)
+        print('eye {}; left {}; top {}; right {}; bottom {}'.format(index, eye.left(), eye.top(), eye.right(), eye.bottom()))
 
-        left = frame.left()
-        top = frame.top()
-        right = frame.right()
-        bottom = frame.bottom()
+        left = eye.left()
+        top = eye.top()
+        right = eye.right()
+        bottom = eye.bottom()
 
         cv2.rectangle(img, (left, top), (right, bottom), (0, 255, 0), 3)
 
     cv2.namedWindow("detect", cv2.WINDOW_AUTOSIZE)
 
     # 保存当前帧
-    out.write(img)
+    # out.write(img)
 
     cv2.imshow("detect", img)
     cv2.waitKey(0)
