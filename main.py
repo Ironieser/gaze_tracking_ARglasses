@@ -1,13 +1,9 @@
 import os
 import cv2
-import glob
 import pandas as pd
 import numpy as np
 from eye_detect import EyeDetect
 from world_detect import WorldDetect
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
-from PIL import Image
 import time
 
 
@@ -17,7 +13,7 @@ detect_world = WorldDetect()
 
 # 定义编解码器并创建 VideoWriter 对象
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter('detect.avi',fourcc, 20.0, (1280,480))
+out = cv2.VideoWriter('detect.avi', fourcc, 20.0, (1280,480))
 
 df = pd.DataFrame(np.zeros((1, 6)), columns=[
     'eye_x', 'eye_y', 'pipil_x', 'pupil_y', 'pupil_w', 'pupil_h'])
@@ -28,6 +24,7 @@ count = 0
 
 
 for files in file_list:
+    t1 = time.time()
     img_dir = os.path.join(test_folder, files)
     print("Processing file: {}".format(img_dir))
     print("这是第" + str(count+1) + "张图片, 共有" + str(num) + "张图片")
@@ -47,7 +44,7 @@ for files in file_list:
     df.iloc[0, 5] = detect_eye.eye_x, detect_eye.eye_y, detect_eye.pupil_x, \
                     detect_eye.pupil_y, detect_eye.pupil_w, detect_eye.pupil_h
 
-
+    t2 = time.time()
     detect_world.detect(df)
     world = detect_world.show(world)
 
@@ -59,8 +56,14 @@ for files in file_list:
     cv2.namedWindow("detect", cv2.WINDOW_AUTOSIZE)
     out.write(output)
     cv2.imshow("detect", output)
+    t3 = time.time()
+    print("分析耗时1：", t2 - t1)
+    print("分析耗时2：", t3 - t2)
 
-    cv2.waitKey(1)
+    if cv2.waitKey(1) == 27:
+        break
+    else:
+        pass
 
     count+=1
 
