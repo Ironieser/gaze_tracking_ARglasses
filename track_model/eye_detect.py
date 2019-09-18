@@ -4,15 +4,15 @@ import cv2
 
 class EyeDetect(object):
     def __init__(self,
-                 model_pupil="model/pupil.svm",
-                 model_eye="model/eye.svm"):
+                 model_pupil="../model/pupil.svm",
+                 model_eye="../model/eye.svm"):
         self.detector_pupil = dlib.simple_object_detector(model_pupil)
         self.detector_eye = dlib.simple_object_detector(model_eye)
 
 
     def detect(self,frame):
-        # b, g, r = cv2.split(frame)
-        # frame = cv2.merge([r, g, b])
+        b, g, r = cv2.split(frame)
+        frame = cv2.merge([r, g, b])
         dets_pupil = self.detector_pupil(frame)
         dets_eye = self.detector_eye(frame)
 
