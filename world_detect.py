@@ -19,6 +19,9 @@ class WorldDetect(object):
 
 
     def show(self,frame):
+        b, g, r = cv2.split(frame)
+        frame = cv2.merge([r, g, b])
+
         cv2.circle(frame, (self.world_x, self.world_y), 30, (0, 255, 0), 5)
 
         # 画十字标
