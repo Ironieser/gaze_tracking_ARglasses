@@ -3,16 +3,26 @@ import cv2
 
 
 class EyeDetect(object):
-    def __init__(self,
-                 model_pupil="pupil_model/pupil.svm",
-                 model_eye="pupil_model/eye.svm"):
+    def __init__(self, model_pupil="model/pupil.svm", model_eye="model/eye.svm"):
         self.detector_pupil = dlib.simple_object_detector(model_pupil)
         self.detector_eye = dlib.simple_object_detector(model_eye)
 
+        self.eye_x = 0
+        self.eye_y = 0
+        self.eye_w = 0
+        self.eye_h = 0
 
-    def detect(self,frame):
-        b, g, r = cv2.split(frame)
-        frame = cv2.merge([r, g, b])
+        self.pupil_x = 0
+        self.pupil_y = 0
+        self.pupil_w = 0
+        self.pupil_h = 0
+
+        self.pupil_c_x = 0
+        self.pupil_c_y = 0
+
+    def detect(self, frame):
+        # b, g, r = cv2.split(frame)
+        # frame = cv2.merge([r, g, b])
         dets_pupil = self.detector_pupil(frame)
         dets_eye = self.detector_eye(frame)
 
@@ -41,19 +51,40 @@ class EyeDetect(object):
             self.eye_w = eye.right() - eye.left()
             self.eye_h = eye.bottom() - eye.top()
 
-
-    def show(self,frame):
-        cv2.rectangle(frame, (self.pupil_x, self.pupil_y),
-                      (self.pupil_x+self.pupil_w, self.pupil_y+self.pupil_h), (150, 255, 0), 3)
+    def show(self, frame):
+        cv2.rectangle(
+            frame,
+            (self.pupil_x, self.pupil_y),
+            (self.pupil_x + self.pupil_w, self.pupil_y + self.pupil_h),
+            (150, 255, 0),
+            3,
+        )
 
         # 画十字标
         color = (255, 255, 0)
 
-        cv2.line(frame, (self.pupil_c_x - 30, self.pupil_c_y), (self.pupil_c_x + 30, self.pupil_c_y), color, thickness=2)
-        cv2.line(frame, (self.pupil_c_x, self.pupil_c_y - 30), (self.pupil_c_x, self.pupil_c_y + 30), color, thickness=2)
+        cv2.line(
+            frame,
+            (self.pupil_c_x - 30, self.pupil_c_y),
+            (self.pupil_c_x + 30, self.pupil_c_y),
+            color,
+            thickness=2,
+        )
+        cv2.line(
+            frame,
+            (self.pupil_c_x, self.pupil_c_y - 30),
+            (self.pupil_c_x, self.pupil_c_y + 30),
+            color,
+            thickness=2,
+        )
 
-        cv2.rectangle(frame, (self.eye_x, self.eye_y),
-                      (self.eye_x+self.eye_w, self.eye_y+self.eye_h), (0, 255, 0), 3)
+        cv2.rectangle(
+            frame,
+            (self.eye_x, self.eye_y),
+            (self.eye_x + self.eye_w, self.eye_y + self.eye_h),
+            (0, 255, 0),
+            3,
+        )
 
         # cv2.namedWindow("detect", cv2.WINDOW_AUTOSIZE)
         # cv2.imshow("detect", frame)

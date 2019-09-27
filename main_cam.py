@@ -10,10 +10,51 @@ from area_recognize import AreaRecognize
 from eye_detect import EyeDetect
 from world_detect import WorldDetect
 
+webcam_eye   = cv2.VideoCapture(1)
+webcam_world = cv2.VideoCapture(0)
+
 test_folder = "img_data/origin"
 detect_eye = EyeDetect()
 detect_world = WorldDetect()
 recognize_area = AreaRecognize()
+
+
+def draw_circle(frame, i):
+    """[summary]
+
+    Arguments:
+        world {[type]} -- [description]
+        eye {[type]} -- [description]
+        detect_world {[type]} -- [description]
+        detect_eye {[type]} -- [description]
+        recognize_area {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+    """
+
+    cv2.putText(
+        world,
+        recognize_area.rec_result.iloc[-1, 0],
+        (detect_world.world_x - 50, detect_world.world_y - 50),
+        cv2.FONT_ITALIC,
+        0.8,
+        (100, 200, 80),
+        2,
+    )
+
+    cv2.rectangle(
+        eye,
+        (detect_eye.pupil_x, detect_eye.pupil_y),
+        (
+            detect_eye.pupil_x + detect_eye.pupil_w,
+            detect_eye.pupil_y + detect_eye.pupil_h,
+        ),
+        (150, 255, 0),
+        3,
+    )
+
+    return frame
 
 # 定义编解码器并创建 VideoWriter 对象
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
@@ -123,18 +164,25 @@ def get_roi(world, detect_world):
 
 
 with tf.Session() as sess:
-    for files in file_list:
+    while True:
+        _, frame1 = webcam_eye.read()
+        _, frame2 = webcam_world.read()
+
+        eye = cv2.resize(frame1,(640,480))
+        world = cv2.resize(frame2, (640, 480))
+
         t1 = time.time()
-        img_dir = os.path.join(test_folder, files)
-        print("Processing file: {}".format(img_dir))
-        print("这是第" + str(count + 1) + "张图片, 共有" + str(num) + "张图片")
+        # img_dir = os.path.join(test_folder, files)
+        # print("Processing file: {}".format(img_dir))
+        # print("这是第" + str(count + 1) + "张图片, 共有" + str(num) + "张图片")
+        #
+        # frame = cv2.imread(img_dir, cv2.IMREAD_COLOR)
+        # # frame = restore_color(frame).copy()
+        #
+        # world = frame[:, 0:640]
+        # eye = frame[:, 640:1280]
 
-        frame = cv2.imread(img_dir, cv2.IMREAD_COLOR)
-        # frame = restore_color(frame).copy()
-
-        world = frame[:, 0:640]
-        eye = frame[:, 640:1280]
-        roi = world.copy()
+        # roi = world
 
         detect_eye.detect(eye)
         df.iloc[0, 0], df.iloc[0, 1], df.iloc[0, 2], df.iloc[0, 3], df.iloc[
@@ -150,7 +198,7 @@ with tf.Session() as sess:
 
         detect_world.detect(df)
 
-        roi = get_roi(roi, detect_world)
+        # roi = get_roi(roi, detect_world)
         # t1 = time.time()
         recognize_area.recognize("mid.jpg", sess)
         t2 = time.time()
@@ -159,7 +207,7 @@ with tf.Session() as sess:
         world, eye = draw_circle(world, eye, detect_world, detect_eye, recognize_area)
 
         output = np.hstack((world, eye))
-        output = np.hstack((output, roi))
+        # output = np.hstack((output, roi))
 
         cv2.namedWindow("detect", cv2.WINDOW_AUTOSIZE)
         out.write(output)
