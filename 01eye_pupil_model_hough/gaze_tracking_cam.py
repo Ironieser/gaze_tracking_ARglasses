@@ -169,8 +169,8 @@ if __name__ == '__main__':
     webcam = cv2.VideoCapture(0)
 
     # 定义编解码器并创建 VideoWriter 对象
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('example_1.avi',fourcc, 20.0, (64,48))
+    # fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    # out = cv2.VideoWriter('example_1.avi',fourcc, 20.0, (64,48))
 
     while True:
         # 我们从网络摄像头中得到一个新的画面
@@ -181,8 +181,8 @@ if __name__ == '__main__':
         print(gaze.x, gaze.y)
 
         # 保存当前帧
-        out.write(frame)
-        #cv2.imshow("Demo", frame)
+        # out.write(frame)
+        cv2.imshow("Demo", frame)
 
         if cv2.waitKey(1) == 27:
             break

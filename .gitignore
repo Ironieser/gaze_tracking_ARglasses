@@ -1,4 +1,5 @@
 
+*.jpg
 *.avi
 *.svm
 *.xml
@@ -8,6 +9,9 @@
 
 01eye_pupil_model_hough/data/
 01eye_pupil_model_hough/tests/
+
+02track_model/world_model/world
+02track_model/world_model/image_metadata_stylesheet.xsl
 
 03img_classify/classify_image_graph_def.pb
 03img_classify/imagenet_2012_challenge_label_map_proto.pbtxt
@@ -28,6 +32,6 @@ tools/img/
 tools/test/
 tools/image_metadata_stylesheet.xsl
 
-
-
+pupil_smart/
+result/
 

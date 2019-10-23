@@ -124,7 +124,7 @@ class GazeTracking(object):
 
 
 if __name__ == '__main__':
-    frame = cv2.imread("data/eye100.jpg")
+    frame = cv2.imread("./01eye_pupil_model_hough/data/eye100.jpg")
 
     gaze = GazeTracking(frame)
     gaze.analyze()
@@ -132,3 +132,4 @@ if __name__ == '__main__':
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+    
