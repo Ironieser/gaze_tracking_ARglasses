@@ -4,6 +4,9 @@
 *.svm
 *.xml
 *.pkl
+*.db
+*.exe
+*.pyc
 
 01eye_pupil_model_dlib/eyes/
 

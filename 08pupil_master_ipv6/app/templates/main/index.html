@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block app_content %}
+  <h1>Hello {{ current_user.username }}!</h1>
+  <h1>Welcome to Pupil-Smart Workshop </h1>
+  <div align=center>
+    <img src="{{ url_for('main.video_feed') }}" width="1080" >
+  </div>
+<!-- 
+  <script src="{{url_for('static', filename='js/jquery-1.2.6.pack.js')}}"></script>
+  <script src="{{url_for('static', filename='js/jquery.messager.js')}}"></script> -->
+
+<!-- 弹窗 -->
+<!-- 
+  <script>
+    function xxx()
+    {
+      $.getJSON("/index/a", function(json){
+        if (json.x == 1)	
+        {
+          var audio= new Audio("./static/beepbeep.mp3");//这里的路径写上mp3文件在项目中的绝对路径
+                audio.play();//播放
+    
+          $.messager.show(0, '敌军还有10s到达战场', 2000);
+              // alert("数据: " );
+        }
+      });
+    }
+    
+    setInterval(xxx, 1000);
+    </script> -->
+    
+
+<!-- # 显示结果
+    Pupil Smart console
+    eye_x: 136   eye_y: 136
+    ----------------------------
+    pupil_x: 254   pupil_y: 114
+    pupil_w: 199   pupil_h: 159
+    ----------------------------
+    word_x: 316.3   word_y: 292.2
+    ----------------------------
+  -->
+  <h4>
+    Pupil Smart console </br>
+    eye_x: {{ object.detect_eye.eye_x }}    
+    eye_y: {{ object.detect_eye.eye_y }} </br>
+    ----------------------------</br>
+    pupil_x:
+    {{ object.detect_eye.pupil_x }}    
+    pupil_y: 
+    {{ object.detect_eye.pupil_y }} </br>
+    pupil_w: 
+    {{ object.detect_eye.pupil_w }}    
+    pupil_h: 
+    {{ object.detect_eye.pupil_h }} </br>
+    ----------------------------</br>
+    world_x: 
+    {{ object.world_x[0] }} </br>
+    world_y: 
+    {{ object.world_y[0] }} </br>
+    ----------------------------</br>
+  </h4>
+
+
+
+
+
+
+
+
+{% endblock %}
